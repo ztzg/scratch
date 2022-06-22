@@ -1,0 +1,36 @@
+From c9af84e4671999b4fe3d0da4ad6b4f3d3bd7727c Mon Sep 17 00:00:00 2001
+From: Ben Wolsieffer <benwolsieffer@gmail.com>
+Date: Tue, 5 Nov 2019 00:09:12 -0500
+Subject: [PATCH v2] Fix ARCH on armv6 and other 32-bit ARM platforms.
+
+Changes the sed expression to recognize all 32-bit ARM versions, rather than
+just armv7.
+
+Signed-off-by: Ben Wolsieffer <benwolsieffer@gmail.com>
+---
+ Make.defaults | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Make.defaults b/Make.defaults
+index ba743f1..50c772d 100755
+--- a/Make.defaults
++++ b/Make.defaults
+@@ -62,12 +62,12 @@ OBJCOPY      := $(prefix)$(CROSS_COMPILE)objcopy
+ 
+ # Host/target identification
+ OS           := $(shell uname -s)
+-HOSTARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed -e s,i[3456789]86,ia32, -e 's,armv7.*,arm,' )
+-ARCH         ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed -e s,i[3456789]86,ia32, -e 's,armv7.*,arm,' )
++HOSTARCH     ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed -e s,i[3456789]86,ia32, -e 's,armv.*,arm,' )
++ARCH         ?= $(shell $(HOSTCC) -dumpmachine | cut -f1 -d- | sed -e s,i[3456789]86,ia32, -e 's,armv.*,arm,' )
+ 
+ # Get ARCH from the compiler if cross compiling 
+ ifneq ($(CROSS_COMPILE),)
+-  override ARCH := $(shell $(CC) -dumpmachine | cut -f1 -d-| sed -e s,i[3456789]86,ia32, -e 's,armv7.*,arm,' )
++  override ARCH := $(shell $(CC) -dumpmachine | cut -f1 -d-| sed -e s,i[3456789]86,ia32, -e 's,armv.*,arm,' )
+ endif
+ 
+ # FreeBSD (and possibly others) reports amd64 instead of x86_64
+-- 
+2.23.0
+
